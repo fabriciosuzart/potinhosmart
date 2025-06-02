@@ -1,74 +1,120 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { StyleSheet, Image, Platform, View, Text, Button, TouchableOpacity } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { useState, useEffect, useRef } from 'react';
+import LottieView from 'lottie-react-native';
+import PoteAnimation from '../../components/PoteAnimation';
 
 export default function HomeScreen() {
+  const [poteLevel, setPoteLevel] = useState(0);
+  const [isCheio, setIsCheio] = useState(false); // false = vazio, true = cheio
+  const [mostrarEstrelas, setMostrarEstrelas] = useState(false);
+  const estrelaAnim = useRef<LottieView>(null);
+
+  useEffect(() => {
+    return () => {
+    }
+  }, []);
+
+  // Função para simular preenchimento
+  const preencherPote = () => {
+    const novoEstado = !isCheio;
+    setIsCheio(novoEstado);
+    setPoteLevel(novoEstado ? 100 : 0);
+    setMostrarEstrelas(true);
+    estrelaAnim.current?.play();
+  };
+
+  const animation = () => {
+    setMostrarEstrelas(true);
+    estrelaAnim.current?.play();
+  }; 
+
+  const imagemPote = isCheio
+    ? require('../../assets/images/potecheio.png')
+    : require('../../assets/images/potevazio.png');
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
+    <SafeAreaProvider style={styles.screen}>
+      <SafeAreaView>
         <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+          style={styles.image}
+          source={imagemPote}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+
+         {/* Estrelas animadas */}
+         {mostrarEstrelas && (
+          <LottieView
+            ref={estrelaAnim}
+            source={require('../../assets/animation/estrelas.json')}
+            autoPlay={false}
+            loop={false}
+            style={styles.estrelinhas}
+          />
+        )}
+
+        <View style={styles.pote}>
+          <PoteAnimation progress={poteLevel} />
+        </View>
+        <TouchableOpacity style={styles.botaoTeste} onPress={preencherPote}>
+          <Text style={styles.textoBotao}>Despejar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.botaoAgendar} onPress={animation}>
+          <Text style={styles.textoBotao}>Agendar</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
+  image: {
+    height: 450,
+    width: 350,
     bottom: 0,
-    left: 0,
+    marginHorizontal: 'auto',
+    marginVertical: 100
+  },
+  pote: {
     position: 'absolute',
+    top: 170,
+    left: 73
+  },
+  botaoTeste: {
+    bottom: 20,
+    right: 80,
+    alignSelf: 'center',
+    position: 'absolute',
+    backgroundColor: '#A6633C',
+    borderRadius: 5, 
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+  },
+  botaoAgendar: {
+    bottom: 20,
+    left: 80,
+    alignSelf: 'center',
+    position: 'absolute',
+    backgroundColor: '#A6633C',
+    color: '#fff',
+    borderRadius: 5, 
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+  },
+  textoBotao: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16
+  },
+  screen: {
+    backgroundColor: '#F2E6D8',
+  },
+  estrelinhas: {
+    position: 'absolute',
+    top: 300, // ajuste aqui para colocar próximo da ração
+    left: 95,
+    width: 200,
+    height: 200,
+    zIndex: 10,
+    pointerEvents: 'none',
   },
 });
