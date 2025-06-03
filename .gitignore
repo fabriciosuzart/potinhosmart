@@ -34,3 +34,9 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+*.pem
+*.key
+*.pub
+id_rsa
+id_ed25519

@@ -1,14 +1,17 @@
 import { StyleSheet, Image, Platform, View, Text, Button, TouchableOpacity } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, use } from 'react';
 import LottieView from 'lottie-react-native';
 import PoteAnimation from '../../components/PoteAnimation';
+import { useRouter } from 'expo-router';
+
 
 export default function HomeScreen() {
   const [poteLevel, setPoteLevel] = useState(0);
   const [isCheio, setIsCheio] = useState(false); // false = vazio, true = cheio
   const [mostrarEstrelas, setMostrarEstrelas] = useState(false);
   const estrelaAnim = useRef<LottieView>(null);
+  const router = useRouter();
 
   useEffect(() => {
     return () => {
@@ -58,7 +61,7 @@ export default function HomeScreen() {
         <TouchableOpacity style={styles.botaoTeste} onPress={preencherPote}>
           <Text style={styles.textoBotao}>Despejar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.botaoAgendar} onPress={animation}>
+        <TouchableOpacity style={styles.botaoAgendar} onPress={() => router.push('/agendar')}>
           <Text style={styles.textoBotao}>Agendar</Text>
         </TouchableOpacity>
       </SafeAreaView>
