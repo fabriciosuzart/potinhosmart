@@ -14,7 +14,7 @@ export default function Adicionar() {
   const [hora, setHora] = useState('');
   const [diasSelecionados, setDiasSelecionados] = useState(['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab']);
   const [porcao, setPorcao] = useState('');
-  const [notificar, setNotificar] = useState('Não Notificar');
+  const [notificar, setNotificar] = useState<number>(0);
 
   const handleTimeSelected = (date: Date) => {
     const hours = date.getHours().toString().padStart(2, '0');
@@ -31,11 +31,20 @@ export default function Adicionar() {
   };
 
   function salvar() {
+    const diasDaSemana = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'];
+
+    const diasCodificados = diasDaSemana.map((dia, index) =>
+      diasSelecionados.includes(dia) ? index.toString() : ''
+    ).join('');
+  
+    const enviar = `${hora},${notificar},${diasCodificados}`;
+  
+    console.log('Enviar via MQTT:', enviar);
     addCard({
       titulo,
       hora,
       repetir: diasSelecionados.length > 0 ? diasSelecionados.join(', ') : 'Nunca',
-      notificar
+      notificar: String(notificar)  // ✅ converte número para string
     });
     router.back();
   }
@@ -52,7 +61,13 @@ export default function Adicionar() {
         style={styles.textinput}
       />
 
-      <NotificacaoPicker value={notificar} onChange={setNotificar} />
+      <NotificacaoPicker
+        value={notificar}
+        onChange={(value) => {
+          console.log('Valor selecionado:', value);
+          setNotificar(value);
+        }}
+      />
 
       <Text style={styles.label}>Repetir:</Text>
       <View style={styles.diasContainer}>

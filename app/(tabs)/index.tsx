@@ -5,6 +5,7 @@ import LottieView from 'lottie-react-native';
 import PoteAnimation from '../../components/PoteAnimation';
 import { useRouter } from 'expo-router';
 import * as Font from 'expo-font';
+import { connectMqtt,  publishMessage, disconnectMqtt} from '../../services/mqttServices'
 
 export default function HomeScreen() {
   const [poteLevel, setPoteLevel] = useState(0);
@@ -14,6 +15,14 @@ export default function HomeScreen() {
   const router = useRouter();
   
   const [fontLoaded, setFontLoaded] = useState(false);
+
+  useEffect(() => {
+    connectMqtt(setPoteLevel);
+
+    return () => {
+      disconnectMqtt();
+    }
+  }, []);
 
   useEffect(() => {
     Font.loadAsync({
@@ -35,6 +44,10 @@ export default function HomeScreen() {
     setMostrarEstrelas(true);
     estrelaAnim.current?.play();
   };
+
+  function testeMotor() {
+    publishMessage('toggleDespejar');
+  }
 
   const animation = () => {
     setMostrarEstrelas(true);

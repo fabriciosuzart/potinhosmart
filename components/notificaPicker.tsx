@@ -4,28 +4,29 @@ import ModalSelector from 'react-native-modal-selector';
 import { Ionicons } from '@expo/vector-icons';
 
 interface NotificacaoPickerProps {
-  value: string;
-  onChange: (value: string) => void;
+  value: number;
+  onChange: (value: number) => void;
 }
 
 export default function NotificacaoPicker({ value, onChange }: NotificacaoPickerProps) {
   const options = [
-    { key: '0', label: 'Não Notificar' },
-    { key: '1', label: '5 min' },
-    { key: '2', label: '10 min' },
-    { key: '3', label: '15 min' },
-    { key: '4', label: '30 min' },
+    { key: '0', label: 'Não Notificar', value: 0 },
+    { key: '1', label: '5 min', value: 5 },
+    { key: '2', label: '10 min', value: 10 },
+    { key: '3', label: '15 min', value: 15 },
+    { key: '4', label: '30 min', value: 30 },
   ];
 
   return (
     <ModalSelector
       data={options}
-      initValue={value}
-      onChange={(option) => onChange(option.label)}
+      initValue={value === 0 ? 'Não Notificar' : `${value} min`}
+      onChange={(option) => onChange(option.value)}
       cancelText="Cancelar"
     >
       <Text style={styles.label}>Notificar antes:</Text>
-      <View style={{ 
+      
+      <View style={{
         flexDirection: 'row',
         alignItems: 'center',
         padding: 10,
@@ -33,7 +34,9 @@ export default function NotificacaoPicker({ value, onChange }: NotificacaoPicker
         backgroundColor: '#fff',
         marginTop: 10
       }}>
-        <Text style={{ flex: 1 }}>{value}</Text>
+        <Text style={{ flex: 1 }}>
+          {value === 0 ? 'Não Notificar' : `${value} min`}
+        </Text>
         <Ionicons name="chevron-down" size={20} color="#555" />
       </View>
     </ModalSelector>
@@ -41,7 +44,7 @@ export default function NotificacaoPicker({ value, onChange }: NotificacaoPicker
 }
 
 const styles = StyleSheet.create({
-  label: { marginBottom: -5, fontWeight: 'bold'},
+  label: { marginBottom: -5, fontWeight: 'bold' },
   selector: {
     flexDirection: 'row',
     justifyContent: 'space-between',

@@ -32,7 +32,7 @@ export default function AgendarScreen() {
             <View style={styles.item}>
               <Text style={styles.horario}>{item.hora}</Text>
               <Text>{item.titulo}, {item.repetir}</Text>
-              <Text>{item.notificar}</Text>
+              <Text>Lembrete {item.notificar} min antes</Text>
             </View>
           )}
         />

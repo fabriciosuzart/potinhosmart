@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { CardProvider } from '../components/CardContext';
+import { ModoProvider } from '../contexts/modo';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
