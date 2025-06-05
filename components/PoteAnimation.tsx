@@ -31,7 +31,7 @@ const PoteAnimation: React.FC<TankAnimationProps> = ({ progress }) => {
             resizeMode="cover"
           />
         </Animated.View>
-        <Text style={styles.textprogress}>{progress}%</Text>
+         {/* <Text style={styles.textprogress}>{progress}%</Text>*/}
       </View>
     </View>
   );

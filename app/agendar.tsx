@@ -12,7 +12,7 @@ export const options = {
 
 export default function AgendarScreen() {
   const router = useRouter();
-  const { cards } = useCard();
+  const { cards, removeCard } = useCard();
 
   return (
     <SafeAreaProvider style={styles.screen}>
@@ -27,11 +27,15 @@ export default function AgendarScreen() {
         <FlatList
           data={cards}
           keyExtractor={(_, index) => index.toString()}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <View style={styles.item}>
               <Text style={styles.horario}>{item.hora}</Text>
               <Text>{item.titulo}, {item.repetir}</Text>
               <Text>Lembrete {item.notificar} min antes</Text>
+
+              <TouchableOpacity style={styles.excluir} onPress={() => removeCard(index)}>
+                <Ionicons name="trash-outline" size={24} color="red" />
+              </TouchableOpacity>
             </View>
           )}
         />
@@ -85,5 +89,10 @@ const styles = StyleSheet.create({
   horario: {
     fontSize: 50,
     fontWeight: 'bold',
+  },
+  excluir: {
+    position: 'absolute',
+    left: 340,
+    top: 90
   },
 });

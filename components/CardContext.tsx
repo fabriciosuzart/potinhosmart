@@ -1,33 +1,55 @@
-import React, { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 
-export interface Card {
-  titulo: string;
+interface Card {
   hora: string;
+  titulo: string;
   repetir: string;
-  notificar: string;
+  notificar: number;
 }
 
 interface CardContextData {
   cards: Card[];
   addCard: (card: Card) => void;
+  removeCard: (index: number) => void;
 }
 
-const CardContext = createContext<CardContextData>({} as CardContextData);
+const CardContext = createContext<CardContextData | undefined>(undefined);
 
-export const CardProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const CardProvider = ({ children }: { children: React.ReactNode }) => {
   const [cards, setCards] = useState<Card[]>([]);
 
-  function addCard(card: Card) {
-    setCards(prev => [...prev, card]);
-  }
+  const addCard = (card: Card) => {
+    setCards(prevCards => [...prevCards, card]);
+  };
+
+  const removeCard = (index: number) => {
+    setCards(prevCards => prevCards.filter((_, i) => i !== index));
+  
+    // Enviar comando de limpeza
+    sendClearScheduleCommand();
+  };
+  
+  const sendClearScheduleCommand = () => {
+    const message = JSON.stringify({ cmd: 'clear_schedule' });
+    
+    // Exemplo: se for via console
+    console.log('Enviando:', message);
+  
+    // Se for via Bluetooth, WebSocket, HTTP ou outro protocolo, insira a chamada correta aqui.
+  };  
 
   return (
-    <CardContext.Provider value={{ cards, addCard }}>
+    <CardContext.Provider value={{ cards, addCard, removeCard }}>
       {children}
     </CardContext.Provider>
   );
 };
 
-export function useCard() {
-  return useContext(CardContext);
-}
+
+export const useCard = () => {
+  const context = useContext(CardContext);
+  if (!context) {
+    throw new Error('useCard must be used within a CardProvider');
+  }
+  return context;
+};
