@@ -5,6 +5,9 @@ import { useState } from 'react';
 import TimePicker from '@/components/timerpicker';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import NotificacaoPicker from '@/components/notificaPicker';
+import { useModo } from '../contexts/modo';
+import { publishMessage } from '@/services/mqttServices';
+
 
 export default function Adicionar() {
   const { addCard } = useCard();
@@ -15,6 +18,7 @@ export default function Adicionar() {
   const [diasSelecionados, setDiasSelecionados] = useState(['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab']);
   const [porcao, setPorcao] = useState('');
   const [notificar, setNotificar] = useState<number>(0);
+  const { modo, setModo } = useModo();
 
   const handleTimeSelected = (date: Date) => {
     const hours = date.getHours().toString().padStart(2, '0');
@@ -31,21 +35,35 @@ export default function Adicionar() {
   };
 
   function salvar() {
-    const diasDaSemana = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'];
-
-    const diasCodificados = diasDaSemana.map((dia, index) =>
-      diasSelecionados.includes(dia) ? index.toString() : ''
-    ).join('');
+    const ordemSemana = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'];
   
-    const enviar = `${hora},${notificar},${diasCodificados}`;
+    const diasMapeados = ordemSemana
+      .filter((dia) => diasSelecionados.includes(dia))   // Mantém só os selecionados na ordem certa
+      .map((dia) => {
+        switch (dia) {
+          case 'Seg': return '0';
+          case 'Ter': return '1';
+          case 'Qua': return '2';
+          case 'Qui': return '3';
+          case 'Sex': return '4';
+          case 'Sab': return '5';
+          case 'Dom': return '6';
+          default: return '';
+        }
+      }).join('');
   
-    console.log('Enviar via MQTT:', enviar);
+    const enviar = `setHora,${hora},${notificar},${diasMapeados}`;
+  
+    console.log('Enviando:', enviar);
+    publishMessage(enviar);
+  
     addCard({
       titulo,
       hora,
       repetir: diasSelecionados.length > 0 ? diasSelecionados.join(', ') : 'Nunca',
-      notificar: String(notificar)  // ✅ converte número para string
+      notificar: String(notificar)
     });
+  
     router.back();
   }
 
@@ -90,7 +108,7 @@ export default function Adicionar() {
         ))}
       </View>
 
-      <TouchableOpacity onPress={salvar} style={styles.botaoSalvar}>
+      <TouchableOpacity style={styles.botaoSalvar} onPress={salvar}>
         <Text style={styles.textBotao}>Salvar</Text>
       </TouchableOpacity>
 

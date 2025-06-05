@@ -2,7 +2,6 @@ import { View, Text, TouchableOpacity, StyleSheet, FlatList, StatusBar } from 'r
 import type { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import AdicionarScreen from './adicionar';
 import { useRouter } from 'expo-router';
 import { useCard } from '../components/CardContext';
 

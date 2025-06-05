@@ -1,27 +1,22 @@
-// src/contexts/ModoContext.tsx
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
-type ModoContextType = {
-  manual: boolean;
-  setManual: (manual: boolean) => void;
-};
+interface ModoContextData {
+  modo: 'manual' | 'setHora';
+  setModo: (modo: 'manual' | 'setHora') => void;
+}
 
-const ModoContext = createContext<ModoContextType | undefined>(undefined);
+const ModoContext = createContext<ModoContextData>({} as ModoContextData);
 
-export const ModoProvider = ({ children }: { children: React.ReactNode }) => {
-  const [manual, setManual] = useState(false);
+export const ModoProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [modo, setModo] = useState<'manual' | 'setHora'>('setHora');
 
   return (
-    <ModoContext.Provider value={{ manual, setManual }}>
+    <ModoContext.Provider value={{ modo, setModo }}>
       {children}
     </ModoContext.Provider>
   );
 };
 
-export const useModo = () => {
-  const context = useContext(ModoContext);
-  if (!context) {
-    throw new Error('useModo must be used within a ModoProvider');
-  }
-  return context;
-};
+export function useModo() {
+  return useContext(ModoContext);
+}

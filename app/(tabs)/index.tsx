@@ -5,7 +5,8 @@ import LottieView from 'lottie-react-native';
 import PoteAnimation from '../../components/PoteAnimation';
 import { useRouter } from 'expo-router';
 import * as Font from 'expo-font';
-import { connectMqtt,  publishMessage, disconnectMqtt} from '../../services/mqttServices'
+import { connectMqtt, publishMessage, disconnectMqtt } from '../../services/mqttServices'
+import { useModo } from '@/contexts/modo';
 
 export default function HomeScreen() {
   const [poteLevel, setPoteLevel] = useState(0);
@@ -13,7 +14,8 @@ export default function HomeScreen() {
   const [mostrarEstrelas, setMostrarEstrelas] = useState(false);
   const estrelaAnim = useRef<LottieView>(null);
   const router = useRouter();
-  
+  const { setModo } = useModo();
+
   const [fontLoaded, setFontLoaded] = useState(false);
 
   useEffect(() => {
@@ -46,13 +48,19 @@ export default function HomeScreen() {
   };
 
   function testeMotor() {
+    const enviar = `manual,0:0,0,0`;
+    console.log('Enviando:', enviar);
+    publishMessage(enviar);
+  
+    // E se quiser manter para o ESP32: 
     publishMessage('toggleDespejar');
   }
+
 
   const animation = () => {
     setMostrarEstrelas(true);
     estrelaAnim.current?.play();
-  }; 
+  };
 
   const imagemPote = isCheio
     ? require('../../assets/images/potecheio.png')
@@ -67,8 +75,8 @@ export default function HomeScreen() {
           source={imagemPote}
         />
 
-         {/* Estrelas animadas */}
-         {mostrarEstrelas && (
+        {/* Estrelas animadas */}
+        {mostrarEstrelas && (
           <LottieView
             ref={estrelaAnim}
             source={require('../../assets/animation/estrelas.json')}
@@ -81,12 +89,15 @@ export default function HomeScreen() {
         <View style={styles.pote}>
           <PoteAnimation progress={poteLevel} />
         </View>
-        <TouchableOpacity style={styles.botaoTeste} onPress={preencherPote}>
+
+        <TouchableOpacity style={styles.botaoTeste} onPress={testeMotor}>
           <Text style={styles.textoBotao}>Despejar</Text>
         </TouchableOpacity>
+
         <TouchableOpacity style={styles.botaoAgendar} onPress={() => router.push('/agendar')}>
           <Text style={styles.textoBotao}>Agendar</Text>
         </TouchableOpacity>
+
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -120,7 +131,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     position: 'absolute',
     backgroundColor: '#A6633C',
-    borderRadius: 5, 
+    borderRadius: 5,
     paddingVertical: 12,
     paddingHorizontal: 24,
   },
@@ -131,7 +142,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: '#A6633C',
     color: '#fff',
-    borderRadius: 5, 
+    borderRadius: 5,
     paddingVertical: 12,
     paddingHorizontal: 24,
   },
