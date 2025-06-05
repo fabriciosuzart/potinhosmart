@@ -1,6 +1,23 @@
 import { View, Text, StyleSheet, ScrollView, SafeAreaView, Image } from 'react-native';
+import { useState, useEffect, useRef, use } from 'react';
+import * as Font from 'expo-font';
 
 export default function Tab() {
+
+  const [fontLoaded, setFontLoaded] = useState(false);
+
+  useEffect(() => {
+    Font.loadAsync({
+      'Caveat-VariableFont_wght': require('../../assets/fonts/Caveat-VariableFont_wght.ttf'),
+      'Caveat-Bold': require('../../assets/fonts/Caveat-Bold.ttf'),
+      'Satisfy-Regular': require('../../assets/fonts/Satisfy-Regular.ttf'),
+    }).then(() => setFontLoaded(true));
+  }, []);
+
+  if (!fontLoaded) {
+    return null; // Ou um SplashScreen
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollView}>
@@ -62,8 +79,8 @@ const styles = StyleSheet.create({
     marginTop: 420
   },
   title: {
-    fontSize: 25,
-    fontWeight: "bold",
+    fontSize: 35,
+    fontFamily: 'Satisfy-Regular',
     marginTop: 40,
     marginHorizontal: 5,
   },

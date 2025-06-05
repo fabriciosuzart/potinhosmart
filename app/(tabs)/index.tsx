@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, use } from 'react';
 import LottieView from 'lottie-react-native';
 import PoteAnimation from '../../components/PoteAnimation';
 import { useRouter } from 'expo-router';
-
+import * as Font from 'expo-font';
 
 export default function HomeScreen() {
   const [poteLevel, setPoteLevel] = useState(0);
@@ -12,17 +12,26 @@ export default function HomeScreen() {
   const [mostrarEstrelas, setMostrarEstrelas] = useState(false);
   const estrelaAnim = useRef<LottieView>(null);
   const router = useRouter();
+  
+  const [fontLoaded, setFontLoaded] = useState(false);
 
   useEffect(() => {
-    return () => {
-    }
+    Font.loadAsync({
+      'Caveat-VariableFont_wght': require('../../assets/fonts/Caveat-VariableFont_wght.ttf'),
+      'Caveat-Bold': require('../../assets/fonts/Caveat-Bold.ttf'),
+      'Satisfy-Regular': require('../../assets/fonts/Satisfy-Regular.ttf'),
+    }).then(() => setFontLoaded(true));
   }, []);
+
+  if (!fontLoaded) {
+    return null; // Ou um SplashScreen
+  }
 
   // Função para simular preenchimento
   const preencherPote = () => {
     const novoEstado = !isCheio;
     setIsCheio(novoEstado);
-    setPoteLevel(novoEstado ? 100 : 0);
+    setPoteLevel(novoEstado ? 0 : 100);
     setMostrarEstrelas(true);
     estrelaAnim.current?.play();
   };
@@ -38,6 +47,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaProvider style={styles.screen}>
+      <Text style={styles.logo}>Potinho Smart</Text>
       <SafeAreaView>
         <Image
           style={styles.image}
@@ -81,6 +91,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 170,
     left: 73
+  },
+  logo: {
+    position: 'absolute',
+    top: 70,
+    left: "27%",
+    fontFamily: 'Satisfy-Regular',
+    fontSize: 35,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   botaoTeste: {
     bottom: 20,

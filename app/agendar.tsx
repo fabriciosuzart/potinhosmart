@@ -1,8 +1,10 @@
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, StatusBar} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, StatusBar } from 'react-native';
 import type { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import AdicionarScreen from './adicionar';
+import { useRouter } from 'expo-router';
+import { useCard } from '../components/CardContext';
 
 export const options = {
   title: 'Agendar',
@@ -10,44 +12,29 @@ export const options = {
 };
 
 export default function AgendarScreen() {
-
-  const DATA = [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-    },
-  ];
-
-  type ItemProps = { title: string };
-
-  const Item = ({ title }: ItemProps) => (
-    <View style={styles.item}>
-      <Text style={styles.title}>{title}</Text>
-    </View>
-  );
+  const router = useRouter();
+  const { cards } = useCard();
 
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider style={styles.screen}>
       <View>
         <Text style={styles.text}>Refeições</Text>
         <TouchableOpacity style={styles.addButton}>
-          <Ionicons name="add-outline" size={50} color="black" style={{ alignSelf: "center" }}/>
+          <Ionicons name="add-outline" size={50} color="black" style={{ alignSelf: "center" }} onPress={() => router.push('/adicionar')} />
         </TouchableOpacity>
       </View>
 
       <SafeAreaView style={styles.container}>
         <FlatList
-          data={DATA}
-          renderItem={({ item }) => <Item title={item.title} />}
-          keyExtractor={item => item.id} 
+          data={cards}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.item}>
+              <Text style={styles.horario}>{item.hora}</Text>
+              <Text>{item.titulo}, {item.repetir}</Text>
+              <Text>{item.notificar}</Text>
+            </View>
+          )}
         />
       </SafeAreaView>
     </SafeAreaProvider>
@@ -78,17 +65,26 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     position: "absolute",
     left: 20,
-    top: 26
+    top: 27
   },
   item: {
-    padding: 70,
+    padding: 20,
     marginVertical: 5,
+    marginHorizontal: 5,
     backgroundColor: "#f9f9f9",
     borderRadius: 20,
     shadowOpacity: 0.1,
     shadowRadius: 3,
     shadowColor: "#000",
-    shadowOffset: { height: 2, width: 2 },
+    shadowOffset: { height: 5, width: 5 },
     position: "relative",
+    width: 380
+  },
+  screen: {
+    backgroundColor: '#F2E6D8',
+  },
+  horario: {
+    fontSize: 50,
+    fontWeight: 'bold',
   },
 });

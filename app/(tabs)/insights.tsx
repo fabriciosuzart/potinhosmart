@@ -3,11 +3,11 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 export default function TabTwoScreen() {
   return (
-   <View>
+   <SafeAreaProvider style={styles.screen}>
     <Text>
       tela de insights
     </Text>
-   </View>
+   </SafeAreaProvider>
   );
 }
 
@@ -21,5 +21,10 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     gap: 8,
+  },
+  screen: {
+    backgroundColor: '#F2E6D8',
+    flex: 1,
+    padding: 20
   },
 });
