@@ -30,13 +30,9 @@ export const connectMqtt = (
   client.on("message", (topic: string, message: Buffer) => {
     console.log(`Mensagem recebida: ${message.toString()}`);
     const data = message.toString();
-    
-    if (data == 'toggleBomba' || data == 'toggleSolenoide' || data == 'toggleAuto') {
-      return;
-    }
 
-    const temperatura = parseFloat(data);
-    onMessageReceived?.(temperatura);
+    const msg = parseFloat(data);
+    onMessageReceived?.(msg);
   });
 
   client.on("error", (err) => {

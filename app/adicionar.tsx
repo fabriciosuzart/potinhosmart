@@ -1,6 +1,6 @@
 import { useCard } from '../components/CardContext';
 import { useRouter } from 'expo-router';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Platform, Switch } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useState } from 'react';
 import TimePicker from '@/components/timerpicker';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -14,18 +14,16 @@ export default function Adicionar() {
   const router = useRouter();
 
   const [titulo, setTitulo] = useState('Refeição');
-  const [hora, setHora] = useState('');
+  const [hours, setHours] = useState('');
+  const [minutes, setMinutes] = useState('');
   const [diasSelecionados, setDiasSelecionados] = useState(['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab']);
   const [porcao, setPorcao] = useState('');
   const [notificar, setNotificar] = useState<number>(0);
   const { modo, setModo } = useModo();
 
   const handleTimeSelected = (date: Date) => {
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const formatted = `${hours}:${minutes}`;
-
-    setHora(formatted);
+    setHours(date.getHours().toString().padStart(2, '0'));
+    setMinutes(date.getMinutes().toString().padStart(2, '0'));
   };
 
   const toggleDia = (dia: string) => {
@@ -52,16 +50,16 @@ export default function Adicionar() {
         }
       }).join('');
   
-    const enviar = `setHora,${hora},${notificar},${diasMapeados}`;
+    const enviar = `{cmd: "schedule", hour: ${hours}, minute: ${minutes}}`;
   
     console.log('Enviando:', enviar);
     publishMessage(enviar);
   
     addCard({
       titulo,
-      hora,
+      hora: `${hours}:${minutes}`,
       repetir: diasSelecionados.length > 0 ? diasSelecionados.join(', ') : 'Nunca',
-      notificar: String(notificar)
+      notificar: notificar
     });
   
     router.back();

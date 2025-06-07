@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react';
+import { publishMessage } from '@/services/mqttServices';
 
 interface Card {
   hora: string;
@@ -24,16 +25,14 @@ export const CardProvider = ({ children }: { children: React.ReactNode }) => {
 
   const removeCard = (index: number) => {
     setCards(prevCards => prevCards.filter((_, i) => i !== index));
-  
     // Enviar comando de limpeza
-    sendClearScheduleCommand();
+    sendClearScheduleCommand(index);
   };
   
-  const sendClearScheduleCommand = () => {
-    const message = JSON.stringify({ cmd: 'clear_schedule' });
+  const sendClearScheduleCommand = (index: number) => {
+    const message = `{cmd: "clear_schedule", id: ${index}}`;
     
-    // Exemplo: se for via console
-    console.log('Enviando:', message);
+    publishMessage(message);
   
     // Se for via Bluetooth, WebSocket, HTTP ou outro protocolo, insira a chamada correta aqui.
   };  

@@ -48,12 +48,12 @@ export default function HomeScreen() {
   };
 
   function testeMotor() {
-    const enviar = `manual,0:0,0,0`;
+    const enviar = ``;
     console.log('Enviando:', enviar);
     publishMessage(enviar);
   
     // E se quiser manter para o ESP32: 
-    publishMessage('toggleDespejar');
+    publishMessage('{cmd: "feed"}');
   }
 
 
