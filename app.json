@@ -4,7 +4,7 @@
     "slug": "PotinhoSmart",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/icon.png/",
     "scheme": "myapp",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.and5reas.PotinhoSmart"
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +38,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a8a632b2-1b0e-4c75-bf9f-5055f604c4a2"
+      }
     }
   }
 }
