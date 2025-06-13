@@ -25,14 +25,26 @@ export const connectMqtt = (
         console.error("Erro ao se inscrever no tópico:", err);
       }
     });
+    client?.subscribe(MQTT_TOPIC  + "/status", (err) => {
+      if (!err) {
+        console.log(`Inscrito no tópico: ${MQTT_TOPIC  + "/status"}`);
+      } else {
+        console.error("Erro ao se inscrever no tópico:", err);
+      }
+    });
   });
 
   client.on("message", (topic: string, message: Buffer) => {
-    console.log(`Mensagem recebida: ${message.toString()}`);
-    const data = message.toString();
-
-    const msg = parseFloat(data);
-    onMessageReceived?.(msg);
+    console.log(`Mensagem recebida: ${topic} ${message.toString()}`);
+    try {
+      const data = JSON.parse(message.toString()); // transforma em objeto JS
+      if (typeof data === "object" && data !== null && "weight_storage" in data) {
+        const weight = data.weight_storage;
+        onMessageReceived?.(weight); // envia o objeto para o handler
+      }
+    } catch (error) {
+      console.error("Erro ao fazer parse da mensagem JSON:", error);
+    }
   });
 
   client.on("error", (err) => {

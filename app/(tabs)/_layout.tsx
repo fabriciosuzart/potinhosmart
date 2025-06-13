@@ -33,8 +33,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="insights"
         options={{
-          title: 'Insights',
-          tabBarIcon: ({ color }) => <FontAwesome6 size={28} name="chart-simple" color={color} />,
+          title: 'Configurações',
+          tabBarIcon: ({ color }) => <FontAwesome6 size={28} name="gear" color={color} />,
         }}
       />
       <Tabs.Screen

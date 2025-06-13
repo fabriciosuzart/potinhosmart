@@ -113,8 +113,8 @@ const styles = StyleSheet.create({
   },
   pote: {
     position: 'absolute',
-    top: 170,
-    left: 73
+    top: 150,
+    left: 69
   },
   logo: {
     position: 'absolute',
