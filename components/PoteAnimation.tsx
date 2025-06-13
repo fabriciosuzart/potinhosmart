@@ -17,7 +17,7 @@ const PoteAnimation: React.FC<TankAnimationProps> = ({ progress }) => {
   }, [progress]);
 
   const heightInterpolate1 = animatedValue1.interpolate({
-    inputRange: [0, 100],
+    inputRange: [0, 3000],
     outputRange: ["0%", "100%"],
   });
 
