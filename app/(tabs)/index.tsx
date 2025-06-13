@@ -18,8 +18,14 @@ export default function HomeScreen() {
 
   const [fontLoaded, setFontLoaded] = useState(false);
 
+  const onMessage = (nivel: number) => {
+    setPoteLevel(nivel);
+    setMostrarEstrelas(true);
+    estrelaAnim.current?.play();
+  }
+
   useEffect(() => {
-    connectMqtt(setPoteLevel);
+    connectMqtt(onMessage);
 
     return () => {
       disconnectMqtt();
@@ -38,15 +44,6 @@ export default function HomeScreen() {
     return null; // Ou um SplashScreen
   }
 
-  // Função para simular preenchimento
-  const preencherPote = () => {
-    const novoEstado = !isCheio;
-    setIsCheio(novoEstado);
-    setPoteLevel(novoEstado ? 0 : 100);
-    setMostrarEstrelas(true);
-    estrelaAnim.current?.play();
-  };
-
   function testeMotor() {
     const enviar = ``;
     console.log('Enviando:', enviar);
@@ -55,12 +52,6 @@ export default function HomeScreen() {
     // E se quiser manter para o ESP32: 
     publishMessage('{cmd: "feed"}');
   }
-
-
-  const animation = () => {
-    setMostrarEstrelas(true);
-    estrelaAnim.current?.play();
-  };
 
   const imagemPote = isCheio
     ? require('../../assets/images/potecheio.png')
